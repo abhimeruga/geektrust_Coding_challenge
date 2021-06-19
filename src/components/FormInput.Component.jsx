@@ -4,9 +4,11 @@ import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: "100%",
+    padding: "2% 0%",
     "& > *": {
       margin: theme.spacing(1),
-      width: "25ch",
+      width: "100%",
     },
   },
   inputElement: {
@@ -15,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FormInput({ label, setInputValue }) {
+export default function FormInput({ label, setInputValue, value }) {
   const classes = useStyles();
 
   const handleInputChange = (event) => {
@@ -30,6 +32,7 @@ export default function FormInput({ label, setInputValue }) {
         id="outlined-basic"
         label={label}
         variant="outlined"
+        value={value}
       />
     </form>
   );

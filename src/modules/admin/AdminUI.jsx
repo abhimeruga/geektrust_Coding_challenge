@@ -15,12 +15,14 @@ import Button from "@material-ui/core/Button";
 import PaginationButton from "../../components/Pagination.Component";
 import FormCheckbox from "../../components/FormCheckbox.Component";
 import FormInput from "../../components/FormInput.Component";
+import ModalContent from "../../components/Modal.Component";
+import { EditModalContent } from "./components/EditModalContent.Component";
 import { searchItems } from "./AdminUtils";
 import {
   deletUser,
   selectUnSelectUser,
-  setSelectAll,
   deleteSelectedUsers,
+  setPageIsSelect,
 } from "../../redux/actions/AdminActions";
 
 const useStyles = makeStyles({
@@ -48,9 +50,15 @@ export default function AdminUI() {
   const [pageEnd, setPageEnd] = useState(10);
   const [inputValue, setInputValue] = useState("");
 
-  const { userData, isSelectAll } = useSelector((state) => state.adminData);
+  const { userData, selectionPage } = useSelector((state) => state.adminData);
   const dispatch = useDispatch();
   const [users, setUsers] = useState(userData);
+  const [openModal, setOpenModal] = useState(false);
+  const [userSelected, setUserSelected] = useState({
+    name: "",
+    email: "",
+    role: "",
+  });
 
   useEffect(() => {
     setUsers(searchItems(userData, inputValue));
@@ -64,12 +72,18 @@ export default function AdminUI() {
     dispatch(deleteSelectedUsers());
   };
 
+  const editUser = (user) => {
+    setOpenModal(!openModal);
+    setUserSelected(user);
+  };
+
   const filterUsers = users?.slice(pageStart, pageEnd);
   return (
     <div className={classes.adminStyles}>
       <FormInput
         label={"Search by Name, Email or Role"}
         setInputValue={setInputValue}
+        value={inputValue}
       />
       {filterUsers.length > 0 ? (
         <div className={classes.tableSize}>
@@ -84,9 +98,9 @@ export default function AdminUI() {
                   <TableCell>
                     {
                       <FormCheckbox
-                        isSelect={isSelectAll}
+                        isSelect={selectionPage[pageStart / 10].isSelect}
                         selectAllHandler={() => {
-                          dispatch(setSelectAll());
+                          dispatch(setPageIsSelect(pageStart / 10));
                         }}
                       />
                     }
@@ -99,7 +113,7 @@ export default function AdminUI() {
               </TableHead>
               <TableBody>
                 {filterUsers?.map((user) => (
-                  <TableRow key={user.id}>
+                  <TableRow selected={user.isSelect} key={user.id}>
                     <TableCell component="th" scope="row">
                       {
                         <FormCheckbox
@@ -112,7 +126,12 @@ export default function AdminUI() {
                     <TableCell align="center">{user.email}</TableCell>
                     <TableCell align="center">{user.role}</TableCell>
                     <TableCell align="center">
-                      <EditIcon />
+                      <span
+                        onClick={() => editUser(user)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <EditIcon />
+                      </span>
                       <span
                         onClick={() => {
                           dispatch(deletUser(user.id));
@@ -143,6 +162,20 @@ export default function AdminUI() {
           count={Math.round(users?.length / 10)}
         />
       </div>
+      <ModalContent
+        title={"Update User Details"}
+        isModalOpen={openModal}
+        content={
+          <EditModalContent
+            id={userSelected.id}
+            name={userSelected.name}
+            email={userSelected.email}
+            role={userSelected.role}
+            handleCloseModal={() => setOpenModal(false)}
+          />
+        }
+        handleCloseModal={() => setOpenModal(false)}
+      />
     </div>
   );
 }

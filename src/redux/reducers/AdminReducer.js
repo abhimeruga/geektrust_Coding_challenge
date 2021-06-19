@@ -1,22 +1,26 @@
 import {
   deleteSelectedUsers,
   deleteUser,
-  selectALLUsers,
   selectUnSelectUser,
+  updateUserDetails,
+  setPageSelection,
 } from "./AdminReducerUtils";
+
 import { ADMIN_ACTION_TYPES } from "../../constants/admin";
 
 const {
   DELETE_SELECTED_USERS,
-  SET_SELECT_ALL,
   SELECT_UNSELECT_USER,
   DELETE_USER,
   SET_USER_DATA,
+  UPDATE_USER_DETAILS,
+  SET_PAGE_SELECTIONS,
+  HANDLE_PAGE_SELECTION,
 } = { ...ADMIN_ACTION_TYPES };
 
 const initialState = {
   userData: [],
-  isSelectAll: false,
+  selectionPage: [],
 };
 export const AdminUser = (state = initialState, action) => {
   switch (action.type) {
@@ -32,16 +36,26 @@ export const AdminUser = (state = initialState, action) => {
         ...state,
         userData: [...selectUnSelectUser(state.userData, action.payload)],
       };
-    case SET_SELECT_ALL:
-      return {
-        ...state,
-        isSelectAll: !state.isSelectAll,
-        userData: [...selectALLUsers(state.userData, !state.isSelectAll)],
-      };
+
     case DELETE_SELECTED_USERS:
       return {
         ...state,
         userData: [...deleteSelectedUsers(state.userData)],
+      };
+    case UPDATE_USER_DETAILS:
+      return {
+        ...state,
+        userData: [...updateUserDetails(state.userData, action.userDetails)],
+      };
+    case SET_PAGE_SELECTIONS:
+      return {
+        ...state,
+        selectionPage: [...action.payload],
+      };
+    case HANDLE_PAGE_SELECTION:
+      return {
+        ...state,
+        ...setPageSelection(state, action.page),
       };
     default:
       return state;

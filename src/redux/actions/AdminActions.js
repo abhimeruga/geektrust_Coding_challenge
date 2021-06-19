@@ -2,10 +2,12 @@ import { ADMIN_ACTION_TYPES } from "../../constants/admin";
 
 const {
   DELETE_SELECTED_USERS,
-  SET_SELECT_ALL,
   SELECT_UNSELECT_USER,
   DELETE_USER,
   SET_USER_DATA,
+  UPDATE_USER_DETAILS,
+  SET_PAGE_SELECTIONS,
+  HANDLE_PAGE_SELECTION,
 } = { ...ADMIN_ACTION_TYPES };
 
 export const setUserData = (data) => ({
@@ -23,10 +25,21 @@ export const selectUnSelectUser = (id) => ({
   payload: id,
 });
 
-export const setSelectAll = () => ({
-  type: SET_SELECT_ALL,
-});
-
 export const deleteSelectedUsers = () => ({
   type: DELETE_SELECTED_USERS,
+});
+
+export const updateUserDetails = (data) => ({
+  type: UPDATE_USER_DETAILS,
+  userDetails: data,
+});
+
+export const setPageSelection = (data) => ({
+  type: SET_PAGE_SELECTIONS,
+  payload: data,
+});
+
+export const setPageIsSelect = (pageId) => ({
+  type: HANDLE_PAGE_SELECTION,
+  page: pageId,
 });

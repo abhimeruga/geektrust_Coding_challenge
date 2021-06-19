@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import AdminUI from "./modules/admin/AdminUI";
-
-import { setUserData } from "./redux/actions/AdminActions";
-
-import { getUserDetails } from "./services/admin";
 import "./App.css";
+import AdminUI from "./modules/admin/AdminUI";
+import { setUserData, setPageSelection } from "./redux/actions/AdminActions";
+import { getUserDetails } from "./services/admin";
+import { pageSelectionController } from "./modules/admin/AdminUtils";
 
 const addIsSelectToUser = (users) =>
   users.map((user) => {
@@ -19,6 +18,7 @@ function App() {
   useEffect(() => {
     (async () => {
       const userData = await getUserDetails();
+      dispatch(setPageSelection(pageSelectionController(userData?.length)));
       dispatch(setUserData(addIsSelectToUser(userData)));
     })();
   }, [dispatch]);

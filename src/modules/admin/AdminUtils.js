@@ -6,3 +6,12 @@ export const searchItems = (users, searchText) => {
   if (!searchText) return users;
   return filteredUsers;
 };
+
+export const pageSelectionController = (users) => {
+  const pageSelectionLength = Math.round(users / 10);
+  const pageSelectionObject = {
+    isSelect: false,
+  };
+  const pageSelection = Array(pageSelectionLength).fill(pageSelectionObject);
+  return pageSelection;
+};

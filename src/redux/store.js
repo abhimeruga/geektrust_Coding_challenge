@@ -1,13 +1,11 @@
-import { combineReducers, createStore, compose } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
 import { AdminUser } from "./reducers/AdminReducer";
 
+const middlewares = applyMiddleware(thunk);
+
 const rootReducer = combineReducers({ adminData: AdminUser });
 
-// const composeEnhancers =
-//   (typeof window !== "undefined" &&
-//     window?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
-//   compose;
-
-export const store = createStore(rootReducer, composeWithDevTools());
+export const store = createStore(rootReducer, composeWithDevTools(middlewares));
