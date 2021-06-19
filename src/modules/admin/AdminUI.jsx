@@ -17,12 +17,13 @@ import FormCheckbox from "../../components/FormCheckbox.Component";
 import FormInput from "../../components/FormInput.Component";
 import ModalContent from "../../components/Modal.Component";
 import { EditModalContent } from "./components/EditModalContent.Component";
-import { searchItems } from "./AdminUtils";
+import { searchItems, pageSelectionController } from "./AdminUtils";
 import {
   deletUser,
   selectUnSelectUser,
   deleteSelectedUsers,
   setPageIsSelect,
+  setPageSelection,
 } from "../../redux/actions/AdminActions";
 
 const useStyles = makeStyles({
@@ -70,6 +71,9 @@ export default function AdminUI() {
 
   const deleteHandler = () => {
     dispatch(deleteSelectedUsers());
+    dispatch(setPageSelection(pageSelectionController(userData?.length)));
+    setPageStart(0);
+    setPageEnd(10);
   };
 
   const editUser = (user) => {
@@ -94,7 +98,7 @@ export default function AdminUI() {
               className={classes.table}
             >
               <TableHead>
-                <TableRow>
+                <TableRow selected={selectionPage[pageStart / 10].isSelect}>
                   <TableCell>
                     {
                       <FormCheckbox
@@ -113,7 +117,7 @@ export default function AdminUI() {
               </TableHead>
               <TableBody>
                 {filterUsers?.map((user) => (
-                  <TableRow selected={user.isSelect} key={user.id}>
+                  <TableRow hover selected={user.isSelect} key={user.id}>
                     <TableCell component="th" scope="row">
                       {
                         <FormCheckbox
